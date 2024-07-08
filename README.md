@@ -19,11 +19,6 @@ This project is a Django-based web application for performing data analysis on p
 - Pandas
 - Default SQLlite DB
 - Git
-
-## Installation
-
-1. **Clone the Repository**
-
-   ```bash
-   git clone https://github.com/your-username/your-repository.git
-   cd your-repository
+- djangorestframework
+- djangorestframework-simplejwt
+- thunderclient or postman to check login and signup
