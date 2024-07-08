@@ -1,0 +1,38 @@
+# Python
+*.pyc
+__pycache__/
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Django
+*.log
+*.pot
+*.pyc
+*.so
+*.mo
+*.sqlite3
+db.sqlite3
+
+# Media
+/media
+/static
+
+# If you use a venv for your virtual environment
+venv/
+.env
+
+# OS-specific
+.DS_Store
+Thumbs.db
+
+# JetBrains IDE
+.idea/
+
+# VS Code
+.vscode/
