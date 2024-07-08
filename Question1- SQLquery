@@ -1,0 +1,59 @@
+WITH TotalSpent AS (
+    SELECT
+        c.customer_id,
+        c.customer_name,
+        c.email,
+        SUM(oi.quantity * oi.price_per_unit) AS total_spent
+    FROM
+        Customers c
+    JOIN
+        Orders o ON c.customer_id = o.customer_id
+    JOIN
+        Order_Items oi ON o.order_id = oi.order_id
+    WHERE
+        o.order_date >= DATE('now', '-1 year') -- Considering only the orders placed in the last year
+    GROUP BY
+        c.customer_id, c.customer_name, c.email
+),
+CategorySpent AS (
+    SELECT
+        c.customer_id,
+        p.category,
+        SUM(oi.quantity * oi.price_per_unit) AS category_spent
+    FROM
+        Customers c
+    JOIN
+        Orders o ON c.customer_id = o.customer_id
+    JOIN
+        Order_Items oi ON o.order_id = oi.order_id
+    JOIN
+        Products p ON oi.product_id = p.product_id
+    WHERE
+        o.order_date >= DATE('now', '-1 year') -- Considering only the orders placed in the last year
+    GROUP BY
+        c.customer_id, p.category
+),
+MostPurchasedCategory AS (
+    SELECT
+        customer_id,
+        category AS most_purchased_category,
+        category_spent,
+        ROW_NUMBER() OVER (PARTITION BY customer_id ORDER BY category_spent DESC) AS rn
+    FROM
+        CategorySpent
+)
+SELECT
+    ts.customer_id,
+    ts.customer_name,
+    ts.email,
+    ts.total_spent,
+    mpc.most_purchased_category
+FROM
+    TotalSpent ts
+JOIN
+    MostPurchasedCategory mpc ON ts.customer_id = mpc.customer_id
+WHERE
+    mpc.rn = 1 -- Get the top category for each customer
+ORDER BY
+    ts.total_spent DESC
+LIMIT 5;
